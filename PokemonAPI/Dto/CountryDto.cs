@@ -2,18 +2,17 @@
 
 namespace PokemonAPI.Dto
 {
-    public class PokemonDto
+    public class CountryDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public DateTime BirthDate { get; set; }
-        public Pokemon NotDto()
+
+        public Country NotDto()
         {
-            return new Pokemon
+            return new Country
             {
                 Id = Id,
                 Name = Name,
-                BirthDate = BirthDate,
             };
         }
     }

@@ -1,20 +1,19 @@
-﻿using PokemonAPI.Dto;
+﻿using PokemonAPI.Models;
 
-namespace PokemonAPI.Models
+namespace PokemonAPI.Dto
 {
-    public class Reviewer
+    public class ReviewerDto
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public ICollection<Review> Reviews { get; set;}
-        public ReviewerDto ToDto()
+        public Reviewer NotDto()
         {
-            return new ReviewerDto
+            return new Reviewer
             {
                 Id = Id,
                 FirstName = FirstName,
-                LastName = LastName
+                LastName = LastName,
             };
         }
     }

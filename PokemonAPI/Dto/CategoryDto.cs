@@ -2,18 +2,15 @@
 
 namespace PokemonAPI.Dto
 {
-    public class PokemonDto
+    public class CategoryDto
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public DateTime BirthDate { get; set; }
-        public Pokemon NotDto()
+        public Category NotDto()
         {
-            return new Pokemon
+            return new Category()
             {
-                Id = Id,
                 Name = Name,
-                BirthDate = BirthDate,
             };
         }
     }

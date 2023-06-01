@@ -1,23 +1,22 @@
-﻿using PokemonAPI.Dto;
+﻿using PokemonAPI.Models;
 
-namespace PokemonAPI.Models
+namespace PokemonAPI.Dto
 {
-    public class Owner
+    public class OwnerDto
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Gym { get; set; }
-        public Country Country { get; set; }
-        public ICollection<PokemonOwner> PokemonOwners { get; set; }
-        public OwnerDto ToDto()
+        public Owner NotDto()
         {
-            return new OwnerDto
+            return new Owner
             {
                 Id = Id,
                 FirstName = FirstName,
                 LastName = LastName,
-                Gym = Gym
+                Gym = Gym,
+
             };
         }
     }

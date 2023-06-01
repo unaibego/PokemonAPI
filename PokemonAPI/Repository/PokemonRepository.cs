@@ -32,9 +32,9 @@ namespace PokemonAPI.Repository
             return ((decimal)review.Sum(r=> r.Rating)/ review.Count());
         }
 
-        public ICollection<Pokemon> GetPokemons()
+        public ICollection<PokemonDto> GetPokemons()
         {
-            return _context.Pokemons.OrderBy(p=> p.Id).ToList();
+            return _context.Pokemons.OrderBy(p=> p.Id).Select(c => c.ToDto()).ToList();
         }
 
         public bool PokemonExists(int pokeId)

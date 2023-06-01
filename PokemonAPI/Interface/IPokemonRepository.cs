@@ -5,7 +5,7 @@ namespace PokemonAPI.Interface
 {
     public interface IPokemonRepository
     {
-        ICollection<Pokemon> GetPokemons();
+        ICollection<PokemonDto> GetPokemons();
         PokemonDto GetPokemon(int id);
         PokemonDto GetPokemon(string name);
         decimal GetPokemonRating(int pokeId);
