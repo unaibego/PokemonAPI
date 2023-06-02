@@ -44,7 +44,7 @@ namespace PokemonAPI.Controllers
             if (!_categoryRepository.CategoryExists(categoryId))
                 return NotFound();
             var pokemons = _categoryRepository.GetPokemonByCategory(categoryId);
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest();
             return Ok(pokemons);
         }
@@ -68,6 +68,42 @@ namespace PokemonAPI.Controllers
             if (!ModelState.IsValid) 
                 return BadRequest();
             return Ok(categoryMap);
+        }
+        [HttpPut("¨{categoryId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateCategory(int categoryId, [FromBody] CategoryDto updatedCategory)
+        {
+            if (updatedCategory == null)
+                return BadRequest(ModelState);
+            if(categoryId !=updatedCategory.Id)
+                return BadRequest(ModelState);
+            if(!_categoryRepository.CategoryExists(categoryId))
+                return NotFound();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var categoryMap = _categoryRepository.UpdateCategory(updatedCategory.NotDto());
+            return NoContent();
+        }
+
+        [HttpDelete("{categoryId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(204)]
+        public IActionResult DeleteCategory(int categoryId)
+        {
+            if (!_categoryRepository.CategoryExists(categoryId))
+                return NotFound(ModelState);
+            var categoryToDelete = _categoryRepository.GetCategory(categoryId);
+
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+            if(!_categoryRepository.DeleteCategory(categoryToDelete.NotDto()))
+            {
+                ModelState.AddModelError("", "Algo ha ido mal");
+            }
+            return NoContent();
         }
 
 

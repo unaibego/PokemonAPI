@@ -45,7 +45,6 @@ namespace PokemonAPI.Repository
             //return _context.Categories.FirstOrDefault(c => c.Id == Id); Nire kodea
             return _context.Categories.Where(e => e.Id == Id).FirstOrDefault().ToDto();
         }
-
         public ICollection<PokemonDto> GetPokemonByCategory(int categoryId)
         {
             return _context.PokemonCategories.Where(p => p.CategoryId == categoryId).Select(c => c.Pokemon.ToDto()).ToList();
@@ -55,6 +54,18 @@ namespace PokemonAPI.Repository
         {
             var saved = _context.SaveChanges();
             return saved > 0 ? true : false;
+        }
+
+        public bool UpdateCategory(Category category)
+        {
+            _context.Update(category);
+            return Save();
+        }
+        public bool DeleteCategory(Category category)
+        {
+            var categoryToDetele = _context.Categories.Where(c => c.Id == category.Id).FirstOrDefault();
+            _context.Remove(categoryToDetele);
+            return Save();
         }
     }
 }

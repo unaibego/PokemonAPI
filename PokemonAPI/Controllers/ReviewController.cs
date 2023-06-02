@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PokemonAPI.Dto;
 using PokemonAPI.Interface;
+using PokemonAPI.Repository;
 
 namespace PokemonAPI.Controllers
 {
@@ -45,6 +46,43 @@ namespace PokemonAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
             return Ok(reviews);
+        }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateReview([FromQuery] int reviewerId,[FromQuery] int pokemonId, [FromBody] ReviewDto reviewCreate)
+        {
+            if (reviewCreate == null)
+                return BadRequest(ModelState);
+            //hemen  berak pasatzen digun category-a guk ditugunetan bilatzen dugu
+            var review = _reviewRepository.GetReviews()
+                .Where(c => c.Title.Trim().ToUpper() == reviewCreate.Title.TrimEnd().ToUpper()).FirstOrDefault();
+            if (review != null)
+            {
+                ModelState.AddModelError("", "Category already exists");
+                return StatusCode(422, ModelState);
+            }
+            var reviewMap = _reviewRepository.CreateReview(reviewerId,pokemonId,  reviewCreate.NotDto());
+            if (!ModelState.IsValid)
+                return BadRequest();
+            return Ok(reviewMap);
+        }
+        [HttpPut("¨{ReviewId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateReview(int reviewId, [FromBody] ReviewDto updatedReview)
+        {
+            if (updatedReview == null)
+                return BadRequest(ModelState);
+            if (reviewId != updatedReview.Id)
+                return BadRequest(ModelState);
+            if (!_reviewRepository.ReviewExists(reviewId))
+                return NotFound();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var reviewMap = _reviewRepository.UpdateReview(updatedReview.NotDto());
+            return NoContent();
         }
     }
 }

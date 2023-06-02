@@ -2,6 +2,7 @@
 using PokemonAPI.Data;
 using PokemonAPI.Dto;
 using PokemonAPI.Interface;
+using PokemonAPI.Models;
 
 namespace PokemonAPI.Repository
 {
@@ -35,6 +36,21 @@ namespace PokemonAPI.Repository
         public bool ReviewerExists(int reviewerId)
         {
             return _context.Reviewers.Any(p => p.Id == reviewerId);
+        }
+        public bool CreateReviewer(Reviewer reviewer)
+        {
+            _context.Add(reviewer);
+            return Save();
+        }
+        public bool UpdateReviewer(Reviewer reviewer) 
+        {
+            _context.Update(reviewer);
+            return Save();
+        }
+        public bool Save()
+        {
+            var saved = _context.SaveChanges();
+            return saved > 0 ? true : false;
         }
     }
 }

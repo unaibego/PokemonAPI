@@ -12,6 +12,7 @@ namespace PokemonAPI.Interface
         ICollection<PokemonDto> GetPokemonByOwner(int OwnerId);
         bool OwnerExist(int ownerId);
         bool CreateOwner(int countryId,Owner owner);
+        bool UpdateOwner(Owner owner);
         bool Save();
     }
 }

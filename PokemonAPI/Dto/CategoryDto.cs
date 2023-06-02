@@ -10,6 +10,7 @@ namespace PokemonAPI.Dto
         {
             return new Category()
             {
+                Id = Id,
                 Name = Name,
             };
         }

@@ -73,6 +73,23 @@ namespace PokemonAPI.Controllers
                 return BadRequest();
             return Ok(categoryMap);
         }
+        [HttpPut("¨{ownerId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateOwner(int ownerId, [FromBody] OwnerDto updatedOwner)
+        {
+            if (updatedOwner == null)
+                return BadRequest(ModelState);
+            if (ownerId != updatedOwner.Id)
+                return BadRequest(ModelState);
+            if (!_ownerRepository.OwnerExist(ownerId))
+                return NotFound();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var ownerMap = _ownerRepository.UpdateOwner(updatedOwner.NotDto());
+            return NoContent();
+        }
 
     }
 }

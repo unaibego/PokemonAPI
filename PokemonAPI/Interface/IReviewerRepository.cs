@@ -1,4 +1,5 @@
 ﻿using PokemonAPI.Dto;
+using PokemonAPI.Models;
 
 namespace PokemonAPI.Interface
 {
@@ -8,5 +9,8 @@ namespace PokemonAPI.Interface
         ReviewerDto GetReviewer(int reviewerId);
         ICollection<ReviewDto> GetReviewsByReviewer(int reviewerId);
         bool ReviewerExists(int reviewerId);
+        bool CreateReviewer(Reviewer reviewer);
+        bool UpdateReviewer(Reviewer reviewer);
+        bool Save();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PokemonAPI.Dto;
 using PokemonAPI.Interface;
+using PokemonAPI.Repository;
 
 namespace PokemonAPI.Controllers
 {
@@ -47,6 +48,43 @@ namespace PokemonAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
             return Ok(reviews);
+        }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateReviewer([FromBody] ReviewerDto reviewerCreate)
+        {
+            if (reviewerCreate == null)
+                return BadRequest(ModelState);
+            //hemen  berak pasatzen digun category-a guk ditugunetan bilatzen dugu
+            var reviewer = _reviewerRepository.GetReviewers()
+                .Where(c => c.FirstName.Trim().ToUpper() == reviewerCreate.FirstName.TrimEnd().ToUpper()).FirstOrDefault();
+            if (reviewer != null)
+            {
+                ModelState.AddModelError("", "Category already exists");
+                return StatusCode(422, ModelState);
+            }
+            var reviewerMap = _reviewerRepository.CreateReviewer(reviewerCreate.NotDto());
+            if (!ModelState.IsValid)
+                return BadRequest();
+            return Ok(reviewerMap);
+        }
+        [HttpPut("¨{reviewerId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateReviewer(int reviewerId, [FromBody] ReviewerDto updatedReviewer)
+        {
+            if (updatedReviewer == null)
+                return BadRequest(ModelState);
+            if (reviewerId != updatedReviewer.Id)
+                return BadRequest(ModelState);
+            if (!_reviewerRepository.ReviewerExists(reviewerId))
+                return NotFound();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var reviewerMap = _reviewerRepository.UpdateReviewer(updatedReviewer.NotDto());
+            return NoContent();
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using PokemonAPI.Dto;
 using PokemonAPI.Interface;
 using PokemonAPI.Models;
+using PokemonAPI.Repository;
 
 namespace PokemonAPI.Controllers
 {
@@ -58,6 +60,44 @@ namespace PokemonAPI.Controllers
                 return Ok(false);
             return Ok(true);
 
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreatePokemon([FromQuery] int ownerId,[FromQuery] int categoryId, [FromBody] PokemonDto pokemonCreate)
+        {
+            if (pokemonCreate == null)
+                return BadRequest(ModelState);
+            //hemen  berak pasatzen digun category-a guk ditugunetan bilatzen dugu
+            var pokemon = _pokemonRepository.GetPokemons()
+                .Where(c => c.Name.Trim().ToUpper() == pokemonCreate.Name.TrimEnd().ToUpper()).FirstOrDefault();
+            if (pokemon != null)
+            {
+                ModelState.AddModelError("", "Category already exists");
+                return StatusCode(422, ModelState);
+            }
+            var pokemonMap = _pokemonRepository.CreatePokemon(categoryId, ownerId, pokemonCreate.NotDto());
+            if (!ModelState.IsValid)
+                return BadRequest();
+            return Ok(pokemonMap);
+        }
+        [HttpPut("¨{pokemonId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdatePokemon(int pokemonId, [FromQuery]int ownerId,[FromQuery] int categoryId, [FromBody] PokemonDto updatedPokemon)
+        {
+            if (updatedPokemon == null)
+                return BadRequest(ModelState);
+            if (pokemonId != updatedPokemon.Id)
+                return BadRequest(ModelState);
+            if (!_pokemonRepository.PokemonExists(pokemonId))
+                return NotFound();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var pokemonMap = _pokemonRepository.UpdatePokemon(ownerId, categoryId, updatedPokemon.NotDto());
+            return NoContent();
         }
     }
 }
